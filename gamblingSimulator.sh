@@ -19,9 +19,9 @@ lossDay=1;
 day=1;
 wonday=0;
 lossday=0;
+inputToPlay=1;
 
 #declaring array
-
 declare -A wonDays
 declare -A lossDays
 
@@ -52,40 +52,48 @@ function maxLossDay(){
 	echo $lossday
 }
 
-# read value from user
-read -p "Enter stack amount : " stackWallet
-read -p "Enter goal amount : " GOAL
-read -p "Enter bet : " bet
 
-CHECKWALLETAMOUNT=$(($stackWallet/2))
-while [[ $totalDays -le 20 ]]
+#Starting of execution
+while [[ $inputToPlay -eq 1 ]]
 do
-	amountWon=0;
-	amountLoss=0;
-	stackWallet=100;
-	while [[ $stackWallet -gt $CHECKWALLETAMOUNT && $stackWallet -lt $((50+100)) ]]
+	# read value from user
+	read -p "Enter stack amount : " stackWallet
+	read -p "Enter goal amount : " GOAL
+	read -p "Enter bet : " bet
+
+	CHECKWALLETAMOUNT=$(($stackWallet/2))
+	while [[ $totalDays -le 20 ]]
 	do
-		gamblerTurn=$((RANDOM%2))
-		#0 for win and 1 for loose 
+		amountWon=0;
+		amountLoss=0;
+		stackWallet=100;
+		while [[ $stackWallet -gt $CHECKWALLETAMOUNT && $stackWallet -lt $((50+100)) ]]
+		do
+			gamblerTurn=$((RANDOM%2))
+			#0 for win and 1 for loose 
 
-		if [ $gamblerTurn -eq 0 ]
-		then
-			stackWallet=$((stackWallet+bet))
-			amountWon=$((amountWon+bet))
-		else
-			stackWallet=$((stackWallet-bet))
-			amountLoss=$((amountLoss+bet))
-		fi
+			if [ $gamblerTurn -eq 0 ]
+			then
+				stackWallet=$((stackWallet+bet))
+				amountWon=$((amountWon+bet))
+			else
+				stackWallet=$((stackWallet-bet))
+				amountLoss=$((amountLoss+bet))
+			fi
+		done
+		wonDays[$wonDay]=$amountWon
+		((wonDay++))
+		lossDays[$lossDay]=$amountLoss
+		((lossDay++))
+		((totalDays++))
 	done
-	wonDays[$wonDay]=$amountWon
-	((wonDay++))
-	lossDays[$lossDay]=$amountLoss
-	((lossDay++))
-	((totalDays++))
+
+	luckDay=$( maxWonDay ${wonDays[1]} $wonDay )
+	unluckDay=$( maxLossDay ${lossDays[1]} $lossDay )
+
+	echo "Luckiest day : $luckDay"
+	echo "Unluckiest day : $unluckDay"
+
+	read -p "Enter 1 to play for next month : " choice
+	inputToPlay=$choice
 done
-
-luckDay=$( maxWonDay ${wonDays[1]} $wonDay )
-unluckDay=$( maxLossDay ${lossDays[1]} $lossDay )
-
-echo "Luckiest day : $luckDay"
-echo "Unluckiest day : $unluckDay"
