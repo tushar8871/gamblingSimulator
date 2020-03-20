@@ -11,7 +11,9 @@ stackWallet=0;
 bet=0;
 amountWon=0;
 amountLoss=0;
-days=0;
+totalDays=0;
+daysWon=0;
+daysLoss=0;
 
 # read value from user
 read -p "Enter stack amount : " stackWallet
@@ -20,7 +22,7 @@ read -p "Enter bet : " bet
 
 CHECKWALLETAMOUNT=$(($stackWallet/2))
 
-while [[ $days -le 20 && $stackWallet -ge $CHECKWALLETAMOUNT && $stackWalletAmount -le $(($CHECHWALLETAMOUNT+$stackWallet)) ]]
+while [[ $totalDays -lt 20 && $stackWallet -ge $CHECKWALLETAMOUNT && $stackWalletAmount -le $(($CHECHWALLETAMOUNT+$stackWallet)) ]]
 do
 	gamblerTurn=$((RANDOM%2))
 	#0 for win and 1 for loose 
@@ -29,8 +31,13 @@ do
 	then
 		stackWallet=$((stackWallet+bet))
 		amountWon=$((amountWon+bet))
+		((daysWon++))
 	else
 		stackWallet=$((stackWallet-bet))
 		amountLoss=$((amountLoss+bet))
+		((daysLoss++))
 	fi
+	((totalDays++))
 done
+echo "total days won : $daysWon"
+echo "total days loss : $daysLoss"
